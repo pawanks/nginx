@@ -1,0 +1,16 @@
+echo "deb http://nginx.org/packages/ubuntu/ precise nginx" > /etc/apt/sources.list.d/nginx.list
+echo "deb-src http://nginx.org/packages/ubuntu/ precise nginx" >> /etc/apt/sources.list.d/nginx.list
+wget -O - http://nginx.org/keys/nginx_signing.key | apt-key add -
+apt-get update
+cd /usr/local/src
+apt-get install build-essential libpcre3-dev zlib1g-dev libssl-dev
+apt-get source nginx
+wget http://naxsi.googlecode.com/files/naxsi-core-0.48.tgz
+tar -xvzf naxsi-core-0.48.tgz
+cd nginx-1.2.4/
+./configure --add-module=../naxsi-core-0.48/naxsi_src/ --prefix=/opt/nginx-naxsi-1.2.4 --with-http_stub_status_module --with-http_ssl_module --without-http_fastcgi_module --without-http_autoindex_module --http-log-path=/var/log/nginx/access.log --lock-path=/var/lock/nginx.lock --pid-path=/var/run/nginx.pid --without-mail_pop3_module --without-mail_smtp_module --without-mail_imap_module --without-http_uwsgi_module --without-http_scgi_module --error-log-path=/var/log/nginx/error.log
+make
+make install
+cp /usr/local/src/naxsi-core-0.48/naxsi_config/default_location_config.example /opt/nginx-naxsi-1.2.4/conf/nbs.rules
+cp /usr/local/src/naxsi-core-0.48/naxsi_config/naxsi_core.rules /opt/nginx-naxsi-1.2.4/conf/naxsi_core.rules
+# see config here: http://code.google.com/p/naxsi/wiki/Howto 
